@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-inference}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  bot:
+    depends_on:
+      - db
+    build:
+      context: ./
+      dockerfile: docker/bot.dockerfile
+    environment:
+      TOKEN: ${TOKEN}
+      ADMINS: ${ADMINS}
+
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-inference}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+
+    command: python src/cli.py
+
+volumes:
+  postgres_data:
+    driver: local
