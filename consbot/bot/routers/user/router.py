@@ -6,5 +6,5 @@ router = Router()
 
 
 @router.message(Command("start"))
-async def user_start(message: Message):
+async def user_start(message: Message) -> None:
     await message.answer("Hello, user")

@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from src.filters.role import ConsultantFilter
+from consbot.bot.filters.role import ConsultantFilter
 
 router = Router()
 router.message.filter(ConsultantFilter())

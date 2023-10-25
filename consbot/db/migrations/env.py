@@ -6,9 +6,9 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from src.config import Settings
-from src.db.engine import build_db_connection_uri
-from src.db.models import Base
+from consbot.config import Settings
+from consbot.db.engine import build_db_connection_uri
+from consbot.db.models import Base
 
 config = context.config
 

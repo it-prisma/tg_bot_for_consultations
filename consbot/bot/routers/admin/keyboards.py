@@ -10,5 +10,5 @@ def get_start_keyboard() -> InlineKeyboardMarkup:
     )
     start_keyboard.row(InlineKeyboardButton(text="Жалобы", callback_data="complaints"))
     start_keyboard.row(InlineKeyboardButton(text="Статистика", callback_data="stat"))
-    
+
     return start_keyboard.as_markup()

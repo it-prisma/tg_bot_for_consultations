@@ -3,12 +3,16 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
-from src.config import Settings
-from src.db.engine import build_db_connection_uri, create_engine, create_session_factory
-from src.middlewares.db import DatabaseMiddleware
-from src.middlewares.settings import SettingsMiddleware
-from src.middlewares.user import UserMiddleware
-from src.routers.router import router
+from consbot.bot.middlewares.db import DatabaseMiddleware
+from consbot.bot.middlewares.settings import SettingsMiddleware
+from consbot.bot.middlewares.user import UserMiddleware
+from consbot.bot.routers.router import router
+from consbot.config import Settings
+from consbot.db.engine import (
+    build_db_connection_uri,
+    create_engine,
+    create_session_factory,
+)
 
 logging.basicConfig(level=logging.INFO)
 

@@ -5,8 +5,8 @@ from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import TelegramObject
 from aiogram.types import User as TGUser
 
-from src.config import Settings
-from src.db.holder import DatabaseHolder
+from consbot.config import Settings
+from consbot.db.holder import DatabaseHolder
 
 
 class UserMiddleware(BaseMiddleware):
@@ -23,7 +23,7 @@ class UserMiddleware(BaseMiddleware):
             tg_user.id, is_admin=(tg_user.id in settings.ADMINS)
         )
         if not user.is_active:
-            await event.bot.send_message(
+            await event.bot.send_message(  # type: ignore[union-attr]
                 user.id, "К сожалению вы внесены в черный список"
             )
             return None

@@ -1,11 +1,10 @@
 from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
-from loguru import logger
 
-from src.db.holder import DatabaseHolder
-from src.filters.role import AdminFilter
-from src.routers.admin.keyboards import get_start_keyboard
+from consbot.bot.filters.role import AdminFilter
+from consbot.bot.routers.admin.keyboards import get_start_keyboard
+from consbot.db.holder import DatabaseHolder
 
 router = Router()
 router.message.filter(AdminFilter())
@@ -29,6 +28,7 @@ message = """
 - сводная информация о всех пользователях бота
 """
 
+
 @router.message(Command("start"))
 async def cmd_start(
     message: Message,
@@ -38,7 +38,7 @@ async def cmd_start(
 
 
 @router.callback_query(F.data == "stat")
-async def consultants_menu(callback: CallbackQuery, holder: DatabaseHolder):
+async def consultants_menu(callback: CallbackQuery, holder: DatabaseHolder) -> None:
     message = []
     for c, u in zip(
         (holder.stat.consultants, holder.stat.admins, holder.stat.users),
@@ -52,4 +52,7 @@ async def consultants_menu(callback: CallbackQuery, holder: DatabaseHolder):
         message.append("\n")
 
     # await callback.message.edit_reply_markup(reply_markup=None)
-    await callback.message.answer('\n'.join(message), reply_markup=get_start_keyboard())
+    await callback.message.answer(  # type: ignore[union-attr]
+        "\n".join(message),
+        reply_markup=get_start_keyboard(),
+    )

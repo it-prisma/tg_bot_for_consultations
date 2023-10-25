@@ -4,7 +4,7 @@ from typing import Any
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import TelegramObject
 
-from src.config import Settings
+from consbot.config import Settings
 
 
 class SettingsMiddleware(BaseMiddleware):

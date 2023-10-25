@@ -1,12 +1,14 @@
+import logging
 from collections.abc import Awaitable, Callable, Coroutine
 from typing import Any
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import TelegramObject
-from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from src.db.holder import DatabaseHolder
+from consbot.db.holder import DatabaseHolder
+
+log = logging.getLogger(__name__)
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -23,7 +25,5 @@ class DatabaseMiddleware(BaseMiddleware):
             data["session"] = session
             holder = DatabaseHolder(session=session)
             data["holder"] = holder
-            logger.info("asdfasdfasfasdfasdf")
-            print("asdfasdfasdf")
             result = await handler(event, data)
         return result

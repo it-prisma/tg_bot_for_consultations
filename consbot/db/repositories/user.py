@@ -1,8 +1,8 @@
 from sqlalchemy import ScalarResult, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.models import User, UserRole
-from src.db.repositories.base import Repository
+from consbot.db.models import User, UserRole
+from consbot.db.repositories.base import Repository
 
 
 class UserRepository(Repository[User]):

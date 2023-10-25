@@ -11,8 +11,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy_utils import ChoiceType
 
-from src.db.base import Base
-from src.db.mixins import TimestampMixin
+from consbot.db.base import Base
+from consbot.db.mixins import TimestampMixin
 
 
 class UserRole(StrEnum):

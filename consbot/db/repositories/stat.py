@@ -1,13 +1,15 @@
+import logging
 from typing import Literal
 
-from loguru import logger
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.models import User, UserRole
-from src.db.repositories.base import Repository
+from consbot.db.models import User, UserRole
+from consbot.db.repositories.base import Repository
 
 StatDict = dict[Literal["total", "active", "deactive"], int]
+
+log = logging.getLogger(__name__)
 
 
 class StatRepository(Repository[User]):
@@ -18,14 +20,13 @@ class StatRepository(Repository[User]):
         users = (
             await self._session.scalars(select(User).where(User.role == role))
         ).all()
-        logger.info(f"{users}")
         active = len(list(filter(lambda x: x.is_active, users)))
         unactive = len(list(filter(lambda x: not x.is_active, users)))
-
+        log.info("Stat repo total=%d", active + unactive)
         return {
             "total": active + unactive,
             "active": active,
-            "deactivate": unactive,
+            "deactive": unactive,
         }
 
     async def users(self) -> StatDict:

@@ -1,8 +1,8 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
-from src.config import Settings
-from src.db.models import User, UserRole
+from consbot.config import Settings
+from consbot.db.models import User, UserRole
 
 
 class AdminFilter(BaseFilter):
