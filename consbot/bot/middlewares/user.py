@@ -6,7 +6,7 @@ from aiogram.types import TelegramObject
 from aiogram.types import User as TGUser
 
 from consbot.config import Settings
-from consbot.db.holder import DatabaseHolder
+from consbot.db.uow import UnitOfWork
 
 
 class UserMiddleware(BaseMiddleware):
@@ -16,10 +16,10 @@ class UserMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: dict[str, Any],
     ) -> Any | None:
-        holder: DatabaseHolder = data["holder"]
+        uow: UnitOfWork = data["uow"]
         settings: Settings = data["settings"]
         tg_user: TGUser = data["event_from_user"]
-        user = await holder.user.get_or_create(
+        user = await uow.users.get_or_create(
             tg_user.id, is_admin=(tg_user.id in settings.ADMINS)
         )
         if not user.is_active:

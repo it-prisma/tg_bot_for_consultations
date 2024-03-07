@@ -2,9 +2,9 @@ from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 
+from consbot.bot.dialogs.admin.keyboards import get_start_keyboard
 from consbot.bot.filters.role import AdminFilter
-from consbot.bot.routers.admin.keyboards import get_start_keyboard
-from consbot.db.holder import DatabaseHolder
+from consbot.db.uow import UnitOfWork
 
 router = Router()
 router.message.filter(AdminFilter())
@@ -38,10 +38,10 @@ async def cmd_start(
 
 
 @router.callback_query(F.data == "stat")
-async def consultants_menu(callback: CallbackQuery, holder: DatabaseHolder) -> None:
+async def consultants_menu(callback: CallbackQuery, uow: UnitOfWork) -> None:
     message = []
     for c, u in zip(
-        (holder.stat.consultants, holder.stat.admins, holder.stat.users),
+        (uow.stats.consultants, uow.stats.admins, uow.stats.users),
         ("Консультанты", "Пользователи"),
     ):
         persons = await c()

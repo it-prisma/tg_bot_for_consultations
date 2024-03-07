@@ -1,30 +1,10 @@
-from enum import StrEnum
-
-from sqlalchemy import (
-    BigInteger,
-    Boolean,
-    ForeignKey,
-    Integer,
-    PrimaryKeyConstraint,
-    String,
-)
+from sqlalchemy import BigInteger, Boolean, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy_utils import ChoiceType
 
 from consbot.db.base import Base
 from consbot.db.mixins import TimestampMixin
-
-
-class UserRole(StrEnum):
-    USER = "USER"
-    CONSULTANT = "CONSULTANT"
-    ADMIN = "ADMIN"
-
-
-class RequestStatus(StrEnum):
-    PENDING = "PENDING"
-    ACCEPTED = "ACCEPTED"
-    REFUSED = "REFUSED"
+from consbot.enums import RequestStatus, UserRole
 
 
 class User(TimestampMixin, Base):
@@ -56,12 +36,11 @@ class Theme(Base):
 
 
 class UserTheme(Base):
-    __table_args__ = (PrimaryKeyConstraint("user_id", "theme_id"),)
     user_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("user.id"), nullable=False, index=True
+        BigInteger, ForeignKey("user.id"), nullable=False, index=True, primary_key=True
     )
     theme_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("theme.id"), index=True, nullable=False
+        BigInteger, ForeignKey("theme.id"), index=True, nullable=False, primary_key=True
     )
 
 
@@ -78,12 +57,15 @@ class Problem(TimestampMixin, Base):
 
 
 class ProblemTheme(Base):
-    __table_args__ = (PrimaryKeyConstraint("problem_id", "theme_id"),)
     problem_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("problem.id"), index=True, nullable=False
+        BigInteger,
+        ForeignKey("problem.id"),
+        index=True,
+        nullable=False,
+        primary_key=True,
     )
     consultant_id: Mapped[int] = mapped_column(
-        BigInteger, ForeignKey("user.id"), nullable=True, index=True
+        BigInteger, ForeignKey("user.id"), nullable=True, index=True, primary_key=True
     )
     theme_id: Mapped[int] = mapped_column(
         BigInteger, ForeignKey("theme.id"), index=True, nullable=False
