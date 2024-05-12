@@ -1,12 +1,16 @@
-from aiogram import F, Router
+from aiogram import Router
+from aiogram.filters import Command
 
-from consbot.bot.dialogs.admin.router import router as admin_router
-from consbot.bot.dialogs.consultant.router import router as consultant_router
-from consbot.bot.dialogs.user.router import router as user_router
+from consbot.bot.dialogs.commands import start_command
+from consbot.utils.bot.commands import Commands
 
-router = Router()
 
-router.include_router(admin_router)
-router.include_router(consultant_router)
-router.include_router(user_router)
-router.message.filter(F.chat.type == "private")
+def register_dialogs(root_router: Router) -> None:
+    dialog_router = Router()
+    dialog_router.include_routers(
+        admin_dialog_router,
+        consultant_dialog_router,
+        regular_dialog_router,
+    )
+    dialog_router.message(Command(Commands.START))(start_command)
+    root_router.include_router(dialog_router)

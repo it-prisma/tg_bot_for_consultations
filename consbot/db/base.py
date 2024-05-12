@@ -1,12 +1,18 @@
 import re
-from typing import Any
+from datetime import datetime
 
-from sqlalchemy import MetaData
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy import DateTime, MetaData, func
+from sqlalchemy.orm import (
+    Mapped,
+    as_declarative,
+    declarative_mixin,
+    declared_attr,
+    mapped_column,
+)
 
 convention = {
     "all_column_names": lambda constraint, table: "_".join(
-        [column.name for column in constraint.columns.values()]
+        [column.name for column in constraint.columns.values()],
     ),
     "ix": "ix__%(table_name)s__%(all_column_names)s",
     "uq": "uq__%(table_name)s__%(all_column_names)s",
@@ -15,14 +21,31 @@ convention = {
     "pk": "pk__%(table_name)s",
 }
 
+metadata = MetaData(naming_convention=convention)  # type:ignore[arg-type]
 
-@as_declarative(metadata=MetaData(naming_convention=convention))  # type: ignore
+
+@as_declarative(metadata=metadata)
 class Base:
-    id: Any
+    metadata: MetaData
 
-    __name__: str
-
-    @declared_attr
+    @declared_attr  # type:ignore[arg-type]
+    @classmethod
     def __tablename__(cls) -> str:
         name_list = re.findall(r"[A-Z][a-z\d]*", cls.__name__)
         return "_".join(name_list).lower()
+
+
+@declarative_mixin
+class TimestampMixin:
+    @declared_attr
+    def created_at(cls) -> Mapped[datetime]:
+        return mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    @declared_attr
+    def updated_at(cls) -> Mapped[datetime]:
+        return mapped_column(
+            DateTime(timezone=True),
+            server_default=func.now(),
+            server_onupdate=func.now(),  # type:ignore[arg-type]
+            onupdate=datetime.utcnow,
+        )
